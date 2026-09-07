@@ -2,34 +2,29 @@
 
 using namespace std;
 
-struct Node
-{
+struct Node{
     int data;
     Node* next;
 };
 
-class Stack
-{
+class Stack{
 private:
     Node* topNode;
 
 public:
-    Stack()
-    {
+    Stack(){
         topNode = nullptr;
     }
 
-    void push(int value)
-    {
+    void push(int value){
         Node* newNode = new Node();
         newNode->data = value;
         newNode->next = topNode;
         topNode = newNode;
     }
-    void pop()
-    {
-        if (topNode == nullptr)
-        {
+
+    void pop(){
+        if (topNode == nullptr){
             cout << "Stack kosong!";
             return;
         }
@@ -38,26 +33,21 @@ public:
         delete temp;
     }
 
-    int top()
-    {
-        if (topNode != nullptr)
-        {
+    int top(){
+        if (topNode != nullptr){
             return topNode->data;
         }
         return -1;
     }
 
-    ~Stack()
-    {
-        while (topNode != nullptr)
-        {
+    ~Stack(){
+        while (topNode != nullptr){
             pop();
         }
     }
 };
 
-int main()
-{
+int main(){
     Stack stack;
     stack.push(505);
     stack.push(2112);
