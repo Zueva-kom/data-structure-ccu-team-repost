@@ -1,6 +1,6 @@
 #include <iostream>
 
-// Struct
+// Struct pointer buat node
 struct Node {
     char data;
     Node* next;
