@@ -1,86 +1,95 @@
 #include <iostream>
 
-const int MAX = 10;
-
-class Queue {
-private:
-    int depan;
-    int belakang;
-    int antrian[MAX];
-
-public:
-    // Konstruktor menginisialisasi posisi depan dan belakang antrean ke indeks 0.
-    Queue() {
-        depan = 0;
-        belakang = 0;
-    }
-
-    // Mengembalikan true jika posisi depan sama dengan belakang, yang berarti antrean kosong.
-    bool isEmpty() const {
-        return depan == belakang;
-    }
-
-    // Antrean dianggap penuh jika posisi setelah belakang kembali ke posisi depan.
-    bool isFull() const {
-        return (belakang + 1) % MAX == depan;
-    }
-
-    // Menambahkan data ke posisi belakang, lalu menggeser belakang secara melingkar.
-    void enqueue(int value) {
-        if (isFull()) {
-            std::cout << "Antrian penuh!\n";
-            return;
-        }
-
-        // Simpan nilai pada indeks belakang dan gunakan modulo agar indeks kembali ke 0
-        // setelah mencapai indeks terakhir array.
-        antrian[belakang] = value;
-        belakang = (belakang + 1) % MAX;
-    }
-
-    // Menghapus dan mengembalikan data paling depan dari antrean.
-    int dequeue() {
-        if (isEmpty()) {
-            std::cout << "Antrian kosong\n";
-            return -1;
-        }
-
-        // Ambil data pada posisi depan, kemudian geser depan secara melingkar.
-        int value = antrian[depan];
-        depan = (depan + 1) % MAX;
-        return value;
-    }
-
-    // Menampilkan semua data dari posisi depan sampai sebelum posisi belakang.
-    void print() const {
-        if (isEmpty()) {
-            std::cout << "Antrian kosong\n";
-            return; // Kurung kurawal ditutup di sini
-        }
-
-        // Telusuri antrean secara melingkar sampai indeks mencapai belakang.
-        int i = depan;
-        while (i != belakang) {
-            std::cout << antrian[i] << " ";
-            i = (i + 1) % MAX;
-        }
-        std::cout << "\n";
-    }
+// Struct
+struct Node {
+    char data;
+    Node* next;
+    Node* prev;
 };
 
-// Fungsi utama untuk menguji operasi enqueue, dequeue, dan print.
+// Variabel global 
+Node* first = nullptr;
+Node* last = nullptr;
+
+bool isEmpty() {
+    return first == nullptr;
+}
+
+void pushFront(char val) {
+    Node* newNode = new Node();
+    newNode->data = val;
+    newNode->next = first;
+    newNode->prev = nullptr;
+
+    if (isEmpty()) {
+        first = newNode;
+        last = newNode;
+    } else {
+        first->prev = newNode;
+        first = newNode;
+    }
+}
+
+void pushBack(char val) {
+    Node* newNode = new Node();
+    newNode->data = val;
+    newNode->next = nullptr;
+    newNode->prev = last;
+
+    if (isEmpty()) {
+        first = newNode;
+        last = newNode;
+    } else {
+        last->next = newNode;
+        last = newNode;
+    }
+}
+
+void popFront() {
+    if (isEmpty()) {
+        std::cout << "Deque kosong!\n";
+        return;
+    }
+    Node* temp = first;
+    first = first->next;
+
+    if (first == nullptr) {
+        last = nullptr;
+    } else {
+        first->prev = nullptr;
+    }
+    delete temp;
+}
+
+void popBack() {
+    if (isEmpty()) {
+        std::cout << "Deque kosong!\n";
+        return;
+    }
+    Node* temp = last;
+    last = last->prev;
+
+    if (last == nullptr) {
+        first = nullptr;
+    } else {
+        last->next = nullptr;
+    }
+    delete temp;
+}
+
 int main() {
-    Queue q;
+    pushBack('B');
+    pushBack('C');
+    pushFront('A'); // Deque: A <-> B <-> C
 
-    // Algoritma pengujian: masukkan tiga nilai ke antrean, tampilkan,
-    // hapus satu nilai terdepan, kemudian tampilkan isi antrean terbaru.
-    q.enqueue(1);
-    q.enqueue(2);
-    q.enqueue(3);
-    q.print();
+    std::cout << "Depan: " << first->data << "\n";  // A
+    std::cout << "Belakang: " << last->data << "\n"; // C
 
-    q.dequeue();
-    q.print();
+    popBack(); // Hapus 'C'
+    std::cout << "Belakang setelah popBack: " << last->data << "\n"; // B
+
+    popFront(); // Hapus 'A'
+    std::cout << "Depan setelah popFront: " << first->data << "\n";   // B
 
     return 0;
 }
